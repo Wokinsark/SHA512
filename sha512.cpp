@@ -1,6 +1,5 @@
 #include "sha512.h"
 
-
 int SHA512_Init(SHA512_CTX *c)
 {
     c->h[0] = U64(0x6a09e667f3bcc908);
@@ -296,7 +295,7 @@ static SHA_LONG64 __fastcall __pull64be(const void *x)
 static void sha512_block_data_order(SHA512_CTX *ctx, const void *in,
                                     size_t num)
 {
-    const SHA_LONG64 *W = in;
+    const SHA_LONG64 *W = (const SHA_LONG64 *)in;
     SHA_LONG64 A, E, T;
     SHA_LONG64 X[9 + 80], *F;
     int i;
@@ -556,3 +555,15 @@ static void sha512_block_data_order(SHA512_CTX *ctx, const void *in,
 }
 
 # endif
+
+void memcpy(byte* destination, const byte *source, size_t num) {
+    for (size_t i = 0; i < num; i++) {
+        destination[i] = source[i];
+    }
+}
+
+void memset(byte *ptr, byte value, size_t num) {
+    for (size_t i = 0; i < num; i++) {
+        ptr[i] = value;
+    }
+}

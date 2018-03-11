@@ -1,8 +1,6 @@
 #include <iostream>
 #include "sha512.h"
 
-typedef unsigned char byte;
-
 void printArray(const byte * array, const int size) {
     for (int i = 0; i < size; i++) {
         printf("%02x ", array[i]);

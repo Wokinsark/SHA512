@@ -17,16 +17,16 @@ typedef struct SHA512state_st {
     SHA_LONG64 Nl, Nh;
     union {
         SHA_LONG64 d[SHA_LBLOCK];
-        unsigned char p[SHA512_CBLOCK];
+        byte p[SHA512_CBLOCK];
     } u;
     unsigned int num, md_len;
 } SHA512_CTX;
 
 int SHA512_Init(SHA512_CTX *c);
 int SHA512_Update(SHA512_CTX *c, const void *data, size_t len);
-int SHA512_Final(unsigned char *md, SHA512_CTX *c);
-unsigned char *SHA512(const unsigned char *d, size_t n, unsigned char *md);
-void SHA512_Transform(SHA512_CTX *c, const unsigned char *data);
+int SHA512_Final(byte *md, SHA512_CTX *c);
+byte *SHA512(const byte *d, size_t n, byte *md);
+void SHA512_Transform(SHA512_CTX *c, const byte *data);
 
 void memset(byte * ptr, byte value, size_t num);
 void memcpy(byte *destination, const byte *source, size_t num);

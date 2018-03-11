@@ -21,9 +21,9 @@ int SHA512_Init(SHA512_CTX *c)
 
 static void sha512_block_data_order(SHA512_CTX *ctx, const void *in, size_t num);
 
-int SHA512_Final(unsigned char *md, SHA512_CTX *c)
+int SHA512_Final(byte *md, SHA512_CTX *c)
 {
-    unsigned char *p = (unsigned char *)c->u.p;
+    byte *p = (byte *)c->u.p;
     size_t n = c->num;
 
     p[n] = 0x80;                /* There always is a room for one */
@@ -39,22 +39,22 @@ int SHA512_Final(unsigned char *md, SHA512_CTX *c)
     c->u.d[SHA_LBLOCK - 2] = c->Nh;
     c->u.d[SHA_LBLOCK - 1] = c->Nl;
 #else
-    p[sizeof(c->u) - 1] = (unsigned char)(c->Nl);
-    p[sizeof(c->u) - 2] = (unsigned char)(c->Nl >> 8);
-    p[sizeof(c->u) - 3] = (unsigned char)(c->Nl >> 16);
-    p[sizeof(c->u) - 4] = (unsigned char)(c->Nl >> 24);
-    p[sizeof(c->u) - 5] = (unsigned char)(c->Nl >> 32);
-    p[sizeof(c->u) - 6] = (unsigned char)(c->Nl >> 40);
-    p[sizeof(c->u) - 7] = (unsigned char)(c->Nl >> 48);
-    p[sizeof(c->u) - 8] = (unsigned char)(c->Nl >> 56);
-    p[sizeof(c->u) - 9] = (unsigned char)(c->Nh);
-    p[sizeof(c->u) - 10] = (unsigned char)(c->Nh >> 8);
-    p[sizeof(c->u) - 11] = (unsigned char)(c->Nh >> 16);
-    p[sizeof(c->u) - 12] = (unsigned char)(c->Nh >> 24);
-    p[sizeof(c->u) - 13] = (unsigned char)(c->Nh >> 32);
-    p[sizeof(c->u) - 14] = (unsigned char)(c->Nh >> 40);
-    p[sizeof(c->u) - 15] = (unsigned char)(c->Nh >> 48);
-    p[sizeof(c->u) - 16] = (unsigned char)(c->Nh >> 56);
+    p[sizeof(c->u) - 1] = (byte)(c->Nl);
+    p[sizeof(c->u) - 2] = (byte)(c->Nl >> 8);
+    p[sizeof(c->u) - 3] = (byte)(c->Nl >> 16);
+    p[sizeof(c->u) - 4] = (byte)(c->Nl >> 24);
+    p[sizeof(c->u) - 5] = (byte)(c->Nl >> 32);
+    p[sizeof(c->u) - 6] = (byte)(c->Nl >> 40);
+    p[sizeof(c->u) - 7] = (byte)(c->Nl >> 48);
+    p[sizeof(c->u) - 8] = (byte)(c->Nl >> 56);
+    p[sizeof(c->u) - 9] = (byte)(c->Nh);
+    p[sizeof(c->u) - 10] = (byte)(c->Nh >> 8);
+    p[sizeof(c->u) - 11] = (byte)(c->Nh >> 16);
+    p[sizeof(c->u) - 12] = (byte)(c->Nh >> 24);
+    p[sizeof(c->u) - 13] = (byte)(c->Nh >> 32);
+    p[sizeof(c->u) - 14] = (byte)(c->Nh >> 40);
+    p[sizeof(c->u) - 15] = (byte)(c->Nh >> 48);
+    p[sizeof(c->u) - 16] = (byte)(c->Nh >> 56);
 #endif
 
     sha512_block_data_order(c, p, 1);
@@ -66,14 +66,14 @@ int SHA512_Final(unsigned char *md, SHA512_CTX *c)
     for (n = 0; n < SHA512_DIGEST_LENGTH / 8; n++) {
         SHA_LONG64 t = c->h[n];
 
-        *(md++) = (unsigned char)(t >> 56);
-        *(md++) = (unsigned char)(t >> 48);
-        *(md++) = (unsigned char)(t >> 40);
-        *(md++) = (unsigned char)(t >> 32);
-        *(md++) = (unsigned char)(t >> 24);
-        *(md++) = (unsigned char)(t >> 16);
-        *(md++) = (unsigned char)(t >> 8);
-        *(md++) = (unsigned char)(t);
+        *(md++) = (byte)(t >> 56);
+        *(md++) = (byte)(t >> 48);
+        *(md++) = (byte)(t >> 40);
+        *(md++) = (byte)(t >> 32);
+        *(md++) = (byte)(t >> 24);
+        *(md++) = (byte)(t >> 16);
+        *(md++) = (byte)(t >> 8);
+        *(md++) = (byte)(t);
     }
 
     return 1;
@@ -82,8 +82,8 @@ int SHA512_Final(unsigned char *md, SHA512_CTX *c)
 int SHA512_Update(SHA512_CTX *c, const void *_data, size_t len)
 {
     SHA_LONG64 l;
-    unsigned char *p = c->u.p;
-    const unsigned char *data = (const unsigned char *)_data;
+    byte *p = c->u.p;
+    const byte *data = (const byte *)_data;
 
     if (len == 0)
         return 1;
@@ -125,7 +125,7 @@ int SHA512_Update(SHA512_CTX *c, const void *_data, size_t len)
     return 1;
 }
 
-void SHA512_Transform(SHA512_CTX *c, const unsigned char *data)
+void SHA512_Transform(SHA512_CTX *c, const byte *data)
 {
     if ((size_t)data % sizeof(c->u.d[0]) != 0) {
         memcpy(c->u.p, data, sizeof(c->u.p)), data = c->u.p;
@@ -133,10 +133,10 @@ void SHA512_Transform(SHA512_CTX *c, const unsigned char *data)
     sha512_block_data_order(c, data, 1);
 }
 
-unsigned char *SHA512(const unsigned char *d, size_t n, unsigned char *md)
+byte *SHA512(const byte *d, size_t n, byte *md)
 {
     SHA512_CTX c;
-    static unsigned char m[SHA512_DIGEST_LENGTH];
+    static byte m[SHA512_DIGEST_LENGTH];
 
     if (md == NULL)
         md = m;
@@ -273,7 +273,7 @@ static SHA_LONG64 __fastcall __pull64be(const void *x)
 #  endif
 # endif
 # ifndef PULL64
-#  define B(x,j)    (((SHA_LONG64)(*(((const unsigned char *)(&x))+j)))<<((7-j)*8))
+#  define B(x,j)    (((SHA_LONG64)(*(((const byte *)(&x))+j)))<<((7-j)*8))
 #  define PULL64(x) (B(x,0)|B(x,1)|B(x,2)|B(x,3)|B(x,4)|B(x,5)|B(x,6)|B(x,7))
 # endif
 # ifndef ROTR
